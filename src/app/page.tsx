@@ -1,6 +1,7 @@
 import { ConnectButton } from '@/components/ConnectButton'
 import { InvestmentComponent } from '@/components/InvestmentComponent'
 import { Dashboard } from '@/components/Dashboard'
+import { LandingPage } from '@/components/LandingPage'
 import Image from 'next/image'
 import { headers } from 'next/headers'
 
@@ -32,7 +33,7 @@ export default function Home() {
           </a>
           <div>
             <h1 style={{ margin: 0, color: '#00EE96', fontSize: '1.5rem' }}>
-              Dashboard
+              FlowVVM Protocol
             </h1>
             <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem' }}>
               Arbitrum Mainnet
@@ -54,7 +55,7 @@ export default function Home() {
         </div>
       </header>
 
-      <Dashboard />
+      <LandingPage />
     </div>
   )
 }
