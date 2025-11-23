@@ -8,6 +8,7 @@ import { InvestmentComponent } from './InvestmentComponent'
 import { PixelCard } from './pixel-ui/PixelCard'
 import { PixelButton } from './pixel-ui/PixelButton'
 import { PowerEvvmSwap } from './PowerEvvmSwap'
+import { UniswapV4Swap } from './UniswapV4Swap'
 
 export interface Transaction {
   id: string
@@ -119,7 +120,7 @@ export const Dashboard = () => {
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '3rem' }}> {/* Updated header div styling */}
         <h1 className="pixel-text-shadow" style={{ // Updated h1 styling
-          fontSize: '3.5rem', 
+          fontSize: '3.5rem',
           color: 'var(--color-soil)',
           marginBottom: '0.5rem',
           fontFamily: 'var(--font-heading)'
@@ -127,7 +128,7 @@ export const Dashboard = () => {
           FlowVVM Power Grid
         </h1>
         <p style={{ // Updated p styling
-          fontSize: '1.2rem', 
+          fontSize: '1.2rem',
           color: 'var(--color-wood)',
           fontFamily: 'var(--font-body)'
         }}>
@@ -152,7 +153,7 @@ export const Dashboard = () => {
             onTransactionCreated={addTransaction}
             onStatusUpdate={updateTransactionStatus}
           />
-          
+
           {showPowerSwap && ( // Conditional rendering for PowerEvvmSwap
             <div className="animate-fade-in">
               <PowerEvvmSwap />
@@ -203,6 +204,9 @@ export const Dashboard = () => {
               onStatusUpdate={updateTransactionStatus}
             />
           </PixelCard>
+
+          {/* Uniswap V4 Swap */}
+          <UniswapV4Swap />
         </div>
       </div>
     </div>

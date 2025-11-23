@@ -363,11 +363,8 @@ export const LandingPage = () => {
                 Key Components
               </h4>
               <ul style={{ fontSize: '1rem', color: 'var(--color-wood)', lineHeight: '1.8', paddingLeft: '1.5rem' }}>
-                <li><strong>EVVM Message Layer:</strong> EIP-191 signed intents for permissionless participation</li>
+                <li><strong>EVVM Staking System:</strong> Incentivizes liquidity providers to stake their LP tokens</li>
                 <li><strong>Uniswap V4 Hook:</strong> Custom logic embedded in swap flow for MEV capture</li>
-                <li><strong>Signature Validation:</strong> On-chain verification of arbitrager authorization</li>
-                <li><strong>Atomic Execution:</strong> Single-transaction arbitrage with no external MEV risk</li>
-                <li><strong>Value Distribution:</strong> Automated redistribution to liquidity providers</li>
               </ul>
             </div>
           </div>
