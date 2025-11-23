@@ -81,8 +81,8 @@ export const LandingPage = () => {
               {[
                 {
                   step: '1',
-                  title: 'Arbitrager Submits EVVM-Signed Intent',
-                  desc: 'The arbitrager includes an EVVM transaction payload (EIP-191 signed) inside HookData, specifying execution parameters for the swap.'
+                  title: 'Arbitrager fishes EVVM-Signed Transaction',
+                  desc: 'The arbitrager includes an EVVM transaction payload (EIP-191 signed) inside HookData.'
                 },
                 {
                   step: '2',
