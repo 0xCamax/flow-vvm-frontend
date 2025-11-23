@@ -276,10 +276,9 @@ export const LandingPage = () => {
           <PixelCard title="Liquidity Providers">
             <div style={{ padding: '1rem' }}>
               <ul style={{ fontSize: '1rem', color: 'var(--color-wood)', lineHeight: '1.8', paddingLeft: '1.5rem' }}>
-                <li><strong>Triple Yield Source:</strong> Swap fees + EVVM incentives + captured arbitrage value</li>
+                <li><strong>Double Yield Source:</strong> Swap fees + EVVM incentives</li>
                 <li><strong>Reduced LVR:</strong> Loss-versus-rebalancing minimized to &lt;0.5%</li>
                 <li><strong>MEV Protection:</strong> Value stays within the pool instead of being extracted</li>
-                <li><strong>Passive Income:</strong> No active management required</li>
               </ul>
             </div>
           </PixelCard>
