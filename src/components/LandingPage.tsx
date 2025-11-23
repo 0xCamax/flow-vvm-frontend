@@ -307,61 +307,6 @@ export const LandingPage = () => {
         </div>
       </section>
 
-      {/* Security Model */}
-      <section style={{ marginBottom: '4rem' }}>
-        <PixelCard title="Security Model">
-          <div style={{ padding: '1rem' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
-              {[
-                {
-                  title: 'Signature Verification',
-                  desc: 'EIP-191 compliant signatures ensure only authorized arbitragers can execute through the Hook.'
-                },
-                {
-                  title: 'Controlled Access',
-                  desc: 'Hook mediates all liquidity access, preventing unauthorized extraction or manipulation.'
-                },
-                {
-                  title: 'Atomic Execution',
-                  desc: 'All operations occur within a single transaction, eliminating race conditions and frontrunning.'
-                },
-                {
-                  title: 'Audited Contracts',
-                  desc: 'OpenZeppelin verified Hook implementation ensures battle-tested security standards.'
-                },
-                {
-                  title: 'Permissionless Design',
-                  desc: 'No admin keys or centralized control points that could be compromised.'
-                },
-                {
-                  title: 'Transparent Logic',
-                  desc: 'All Hook logic is on-chain and verifiable, ensuring trustless operation.'
-                }
-              ].map((item, i) => (
-                <div key={i}>
-                  <h4 style={{
-                    fontSize: '1.1rem',
-                    color: 'var(--color-soil)',
-                    marginBottom: '0.5rem',
-                    fontFamily: 'var(--font-heading)'
-                  }}>
-                    {item.title}
-                  </h4>
-                  <p style={{
-                    fontSize: '0.95rem',
-                    color: 'var(--color-wood)',
-                    margin: 0,
-                    lineHeight: '1.6'
-                  }}>
-                    {item.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </PixelCard>
-      </section>
-
       {/* Architecture */}
       <section style={{ marginBottom: '4rem' }}>
         <PixelCard title="System Architecture">
@@ -377,8 +322,8 @@ export const LandingPage = () => {
               <pre style={{ margin: 0, color: 'var(--color-soil)' }}>
                 {`┌─────────────────────────────────────────────────────────────┐
 │                      Arbitrager                             │
-│  • Signs EVVM message (EIP-191)                            │
-│  • Attaches to HookData                                     │
+│                                                            │
+│  • Attaches EVVM signature to HookData                     │
 └──────────────────────┬──────────────────────────────────────┘
                        │
                        ▼
