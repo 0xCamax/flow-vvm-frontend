@@ -3,7 +3,21 @@ import React from 'react'
 import { PixelCard } from './pixel-ui/PixelCard'
 import { PixelButton } from './pixel-ui/PixelButton'
 
-export const LandingPage = () => {
+interface LandingPageProps {
+  onNavigateToDashboard?: () => void
+}
+
+export const LandingPage = ({ onNavigateToDashboard }: LandingPageProps) => {
+  const handleLaunchApp = () => {
+    if (onNavigateToDashboard) {
+      onNavigateToDashboard()
+    }
+  }
+
+  const handleGitHub = () => {
+    window.open('https://github.com/0xCamax/EvvmExecutorHook', '_blank')
+  }
+
   return (
     <div style={{
       maxWidth: '1400px',
@@ -44,6 +58,7 @@ export const LandingPage = () => {
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <PixelButton
             variant="primary"
+            onClick={handleLaunchApp}
             style={{
               fontSize: '1.2rem',
               padding: '1rem 2rem',
@@ -55,12 +70,13 @@ export const LandingPage = () => {
           </PixelButton>
           <PixelButton
             variant="secondary"
+            onClick={handleGitHub}
             style={{
               fontSize: '1.2rem',
               padding: '1rem 2rem'
             }}
           >
-            Read Docs
+            View on GitHub
           </PixelButton>
         </div>
       </section>
@@ -188,124 +204,123 @@ export const LandingPage = () => {
         </PixelCard>
       </section>
 
-      {/* Data-Backed Insights */}
-      <section style={{ marginBottom: '4rem' }}>
-        <PixelCard title="Data-Backed Insights">
-          <div style={{ padding: '1rem' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              {[
-                {
-                  metric: 'EVVM Batching Efficiency',
-                  value: '20-35% gas reduction',
-                  insight: 'Compared to traditional multi-call designs, EVVM batching significantly reduces transaction costs.'
-                },
-                {
-                  metric: 'Arbitrage Frequency',
-                  value: 'Every 5-30 seconds',
-                  insight: 'Cross-AMM arbitrage opportunities appear frequently in active markets, providing consistent yield opportunities.'
-                },
-                {
-                  metric: 'MEV Internalization Value',
-                  value: '8-15% additional retained value',
-                  insight: 'Studies show substantial value retention when MEV is captured and redistributed to LPs instead of extracted externally.'
-                },
-                {
-                  metric: 'LVR Mitigation',
-                  value: '<0.5% loss-versus-rebalancing',
-                  insight: 'RediSwap research demonstrates effective LVR reduction through systematic value redistribution mechanisms.'
-                },
-                {
-                  metric: 'MEV Pressure Evidence',
-                  value: '~80% of spam targets Uniswap',
-                  insight: 'In fast-finality chains, the majority of reverted transactions target Uniswap pools, proving significant MEV pressure.'
-                }
-              ].map((item, i) => (
-                <div
-                  key={i}
-                  style={{
-                    padding: '1.5rem',
-                    background: 'var(--color-cloud)',
-                    border: '2px solid var(--color-wood)'
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '0.5rem' }}>
-                    <h4 style={{
-                      fontSize: '1.1rem',
-                      color: 'var(--color-soil)',
-                      margin: 0,
-                      fontFamily: 'var(--font-heading)'
-                    }}>
-                      {item.metric}
-                    </h4>
-                    <span style={{
-                      fontSize: '1.2rem',
-                      color: 'var(--color-green)',
-                      fontWeight: 'bold'
-                    }}>
-                      {item.value}
-                    </span>
-                  </div>
-                  <p style={{
-                    fontSize: '0.95rem',
-                    color: 'var(--color-wood)',
-                    margin: 0,
-                    lineHeight: '1.6'
-                  }}>
-                    {item.insight}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </PixelCard>
-      </section>
 
       {/* Benefits */}
       <section style={{ marginBottom: '4rem' }}>
-        <h2 style={{
-          fontSize: '2.5rem',
-          color: 'var(--color-soil)',
-          textAlign: 'center',
-          marginBottom: '2rem',
-          fontFamily: 'var(--font-heading)'
-        }}>
+        <h2
+          style={{
+            fontSize: '2.5rem',
+            color: 'var(--color-soil)',
+            textAlign: 'center',
+            marginBottom: '2rem',
+            fontFamily: 'var(--font-heading)',
+          }}
+        >
           Benefits for All Participants
         </h2>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '1.5rem',
+          }}
+        >
           <PixelCard title="Liquidity Providers">
             <div style={{ padding: '1rem' }}>
-              <ul style={{ fontSize: '1rem', color: 'var(--color-wood)', lineHeight: '1.8', paddingLeft: '1.5rem' }}>
-                <li><strong>Double Yield Source:</strong> Swap fees + EVVM incentives</li>
-                <li><strong>Reduced LVR:</strong> Loss-versus-rebalancing minimized to &lt;0.5%</li>
-                <li><strong>MEV Protection:</strong> Value stays within the pool instead of being extracted</li>
+              <ul
+                style={{
+                  fontSize: '1rem',
+                  color: 'var(--color-wood)',
+                  lineHeight: '1.8',
+                  paddingLeft: '1.5rem',
+                }}
+              >
+                <li>
+                  <strong>Optimized Yield:</strong> LPs capture both swap fees and the
+                  economic value of arbitrage, without being displaced by external MEV.
+                </li>
+                <li>
+                  <strong>Reduced LVR:</strong> The EVVM keeps the pool balanced,
+                  significantly decreasing Loss-versus-Rebalancing.
+                </li>
+                <li>
+                  <strong>Internalized MEV:</strong> Arbitrage value is returned to LPs
+                  instead of being extracted by external actors.
+                </li>
+                <li>
+                  <strong>Stable Liquidity Flow:</strong> The EVVM can operate with
+                  zero execution cost, ensuring long-term sustainability for LP returns.
+                </li>
               </ul>
             </div>
           </PixelCard>
 
-          <PixelCard title="Arbitragers">
+          <PixelCard title="EVVM Execution Layer">
             <div style={{ padding: '1rem' }}>
-              <ul style={{ fontSize: '1rem', color: 'var(--color-wood)', lineHeight: '1.8', paddingLeft: '1.5rem' }}>
-                <li><strong>Permissionless Access:</strong> No gatekeeping or special privileges required</li>
-                <li><strong>Controlled Liquidity:</strong> Safe access to pool liquidity via EVVM signatures</li>
-                <li><strong>Gas Efficiency:</strong> 20-35% lower costs through batching</li>
-                <li><strong>EVVM Incentives:</strong> Additional rewards for execution</li>
+              <ul
+                style={{
+                  fontSize: '1rem',
+                  color: 'var(--color-wood)',
+                  lineHeight: '1.8',
+                  paddingLeft: '1.5rem',
+                }}
+              >
+                <li>
+                  <strong>Cost-Free Execution:</strong> The model enables the EVVM to
+                  perform rebalances and arbitrage without incurring execution costs
+                  by delegating actions through EIP-191 signatures.
+                </li>
+                <li>
+                  <strong>Optional Private Liquidity:</strong> The EVVM may maintain
+                  a private liquidity source for controlled, autonomous arbitrage.
+                </li>
+                <li>
+                  <strong>Secure Access Control:</strong> Every action is
+                  cryptographically authorized, ensuring safe and permissioned
+                  execution.
+                </li>
+                <li>
+                  <strong>Predictable Market Impact:</strong> Coordinated execution
+                  reduces unnecessary slippage and avoids competition with external
+                  searchers.
+                </li>
               </ul>
             </div>
           </PixelCard>
 
           <PixelCard title="Protocol Integrators">
             <div style={{ padding: '1rem' }}>
-              <ul style={{ fontSize: '1rem', color: 'var(--color-wood)', lineHeight: '1.8', paddingLeft: '1.5rem' }}>
-                <li><strong>Audited Security:</strong> OpenZeppelin verified Hook implementation</li>
-                <li><strong>Composable Design:</strong> Works with existing Uniswap V4 infrastructure</li>
-                <li><strong>Programmable Access:</strong> EVVM signatures enable custom logic</li>
-                <li><strong>Decentralized:</strong> No central points of failure</li>
+              <ul
+                style={{
+                  fontSize: '1rem',
+                  color: 'var(--color-wood)',
+                  lineHeight: '1.8',
+                  paddingLeft: '1.5rem',
+                }}
+              >
+                <li>
+                  <strong>High-Security Architecture:</strong> Hook implementation
+                  follows OpenZeppelin security standards to minimize attack surface.
+                </li>
+                <li>
+                  <strong>Uniswap V4 Native:</strong> Fully composable with the
+                  existing architecture and slot-based design.
+                </li>
+                <li>
+                  <strong>Programmable EVVM Logic:</strong> EVVM signatures enable
+                  custom execution flows without compromising security.
+                </li>
+                <li>
+                  <strong>Decentralized Infrastructure:</strong> No central operators
+                  or failure points; all components run autonomously.
+                </li>
               </ul>
             </div>
           </PixelCard>
         </div>
       </section>
+
 
       {/* Architecture */}
       <section style={{ marginBottom: '4rem' }}>
@@ -400,6 +415,7 @@ export const LandingPage = () => {
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '2rem' }}>
           <PixelButton
             variant="primary"
+            onClick={handleLaunchApp}
             style={{
               fontSize: '1.2rem',
               padding: '1rem 2rem',
@@ -411,15 +427,7 @@ export const LandingPage = () => {
           </PixelButton>
           <PixelButton
             variant="secondary"
-            style={{
-              fontSize: '1.2rem',
-              padding: '1rem 2rem'
-            }}
-          >
-            View Documentation
-          </PixelButton>
-          <PixelButton
-            variant="secondary"
+            onClick={handleGitHub}
             style={{
               fontSize: '1.2rem',
               padding: '1rem 2rem'

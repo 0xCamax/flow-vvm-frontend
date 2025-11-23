@@ -1,11 +1,14 @@
+'use client'
+import { useState } from 'react'
 import { ConnectButton } from '@/components/ConnectButton'
 import { InvestmentComponent } from '@/components/InvestmentComponent'
 import { Dashboard } from '@/components/Dashboard'
 import { LandingPage } from '@/components/LandingPage'
 import Image from 'next/image'
-import { headers } from 'next/headers'
 
 export default function Home() {
+  const [currentView, setCurrentView] = useState<'landing' | 'dashboard'>('landing')
+
   return (
     <div>
       <header
@@ -26,22 +29,20 @@ export default function Home() {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <a
-            href="https://www.evvm.info/docs/intro"
-            style={{ display: 'flex', alignItems: 'center' }}
+            href="#"
+            onClick={(e) => {
+              e.preventDefault()
+              setCurrentView('landing')
+            }}
+            style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
           >
-            <Image src="/evvm.svg" alt="EVVM" width={50} height={50} priority />
+            <Image src="/logo.jpeg" alt="FlowVVM Logo" width={50} height={50} priority />
           </a>
           <div>
-            <h1 style={{ margin: 0, color: '#00EE96', fontSize: '1.5rem' }}>
-              FlowVVM Protocol
-            </h1>
-            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem' }}>
-              Arbitrum Mainnet
-            </p>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <InvestmentComponent />
+          {currentView === 'dashboard' && <InvestmentComponent />}
           <div
             style={{
               background: 'rgba(2, 132, 199, 0.1)',
@@ -55,7 +56,11 @@ export default function Home() {
         </div>
       </header>
 
-      <LandingPage />
+      {currentView === 'landing' ? (
+        <LandingPage onNavigateToDashboard={() => setCurrentView('dashboard')} />
+      ) : (
+        <Dashboard />
+      )}
     </div>
   )
 }

@@ -92,10 +92,8 @@ export const PayCreator = ({
 
       onTransactionCreated(newTx)
       // Reset form manually if needed, but controlled inputs might need reset logic
-      alert('Signature created successfully!')
     } catch (error) {
       console.error('Error creating signature:', error)
-      alert('Error creating signature: ' + (error as Error).message)
     } finally {
       setLoading(false)
     }

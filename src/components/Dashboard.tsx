@@ -7,7 +7,7 @@ import { TransactionStats } from './TransactionStats'
 import { InvestmentComponent } from './InvestmentComponent'
 import { PixelCard } from './pixel-ui/PixelCard'
 import { PixelButton } from './pixel-ui/PixelButton'
-import { PowerEvvmSwap } from './PowerEvvmSwap'
+
 import { UniswapV4Swap } from './UniswapV4Swap'
 
 export interface Transaction {
@@ -32,7 +32,7 @@ export const Dashboard = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [filter, setFilter] = useState<'all' | 'created' | 'queued' | 'executed' | 'failed'>('all')
   const [loading, setLoading] = useState(true)
-  const [showPowerSwap, setShowPowerSwap] = useState(false)
+
 
   // Load transactions from storage
   useEffect(() => {
@@ -73,7 +73,7 @@ export const Dashboard = () => {
     const updated = [newTx, ...transactions]
     setTransactions(updated)
     saveTransactions(updated)
-    setShowPowerSwap(true)
+
   }
 
   const updateTransactionStatus = (
@@ -117,24 +117,6 @@ export const Dashboard = () => {
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}> {/* Updated main div styling */}
-      {/* Header */}
-      <div style={{ textAlign: 'center', marginBottom: '3rem' }}> {/* Updated header div styling */}
-        <h1 className="pixel-text-shadow" style={{ // Updated h1 styling
-          fontSize: '3.5rem',
-          color: 'var(--color-soil)',
-          marginBottom: '0.5rem',
-          fontFamily: 'var(--font-heading)'
-        }}>
-          FlowVVM Power Grid
-        </h1>
-        <p style={{ // Updated p styling
-          fontSize: '1.2rem',
-          color: 'var(--color-wood)',
-          fontFamily: 'var(--font-body)'
-        }}>
-          Renewable Energy for the Ethereum Virtual Machine
-        </p>
-      </div>
 
       {/* Stats Overview */}
       <TransactionStats transactions={transactions} />
@@ -154,11 +136,6 @@ export const Dashboard = () => {
             onStatusUpdate={updateTransactionStatus}
           />
 
-          {showPowerSwap && ( // Conditional rendering for PowerEvvmSwap
-            <div className="animate-fade-in">
-              <PowerEvvmSwap />
-            </div>
-          )}
         </div>
 
         {/* Transactions History */}
@@ -206,7 +183,7 @@ export const Dashboard = () => {
           </PixelCard>
 
           {/* Uniswap V4 Swap */}
-          <UniswapV4Swap />
+          <UniswapV4Swap latestTransaction={transactions[0]} />
         </div>
       </div>
     </div>
