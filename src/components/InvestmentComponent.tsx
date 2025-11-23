@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import { PixelButton } from './pixel-ui/PixelButton'
 
 interface InvestmentComponentProps {
   hookAddress?: string
@@ -74,21 +75,18 @@ export const InvestmentComponent = ({
   }
 
   return (
-    <button
+    <PixelButton
       onClick={handleInvest}
-      title={`Invest on Uniswap (hook ${hookAddress})`}
+      variant="primary"
       style={{
         padding: '0.45rem 0.9rem',
-        background: 'transparent',
-        color: '#00EE96',
-        border: '1px solid #00EE96',
-        borderRadius: 6,
-        cursor: 'pointer',
-        fontWeight: 600,
         fontSize: '0.9rem',
+        background: 'var(--color-gold)',
+        color: 'var(--color-soil)',
+        borderColor: 'var(--color-soil)',
       }}
     >
       Invest
-    </button>
+    </PixelButton>
   )
 }

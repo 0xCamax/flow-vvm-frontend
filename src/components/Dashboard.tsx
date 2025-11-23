@@ -5,6 +5,9 @@ import { PayCreator } from './PayCreator'
 import { TransactionHistory } from './TransactionHistory'
 import { TransactionStats } from './TransactionStats'
 import { InvestmentComponent } from './InvestmentComponent'
+import { PixelCard } from './pixel-ui/PixelCard'
+import { PixelButton } from './pixel-ui/PixelButton'
+import { PowerEvvmSwap } from './PowerEvvmSwap'
 
 export interface Transaction {
   id: string
@@ -18,7 +21,7 @@ export interface Transaction {
   priority: 'low' | 'high'
   executor: string
   signature: string
-  status: 'created' | 'executed' | 'failed'
+  status: 'created' | 'queued' | 'executed' | 'failed'
   txHash?: string
   error?: string
 }
@@ -26,8 +29,9 @@ export interface Transaction {
 export const Dashboard = () => {
   const { address, isConnected } = useAppKitAccount()
   const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [filter, setFilter] = useState<'all' | 'created' | 'executed' | 'failed'>('all')
+  const [filter, setFilter] = useState<'all' | 'created' | 'queued' | 'executed' | 'failed'>('all')
   const [loading, setLoading] = useState(true)
+  const [showPowerSwap, setShowPowerSwap] = useState(false)
 
   // Load transactions from storage
   useEffect(() => {
@@ -68,11 +72,12 @@ export const Dashboard = () => {
     const updated = [newTx, ...transactions]
     setTransactions(updated)
     saveTransactions(updated)
+    setShowPowerSwap(true)
   }
 
   const updateTransactionStatus = (
     id: string,
-    status: 'created' | 'executed' | 'failed',
+    status: 'created' | 'queued' | 'executed' | 'failed',
     txHash?: string,
     error?: string
   ) => {
@@ -109,95 +114,86 @@ export const Dashboard = () => {
     )
   }
 
-  if (loading) {
-    return (
-      <div style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8' }}>
-        <p>Loading...</p>
-      </div>
-    )
-  }
-
   return (
-    <div style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}> {/* Updated main div styling */}
+      {/* Header */}
+      <div style={{ textAlign: 'center', marginBottom: '3rem' }}> {/* Updated header div styling */}
+        <h1 className="pixel-text-shadow" style={{ // Updated h1 styling
+          fontSize: '3.5rem', 
+          color: 'var(--color-soil)',
+          marginBottom: '0.5rem',
+          fontFamily: 'var(--font-heading)'
+        }}>
+          FlowVVM Power Grid
+        </h1>
+        <p style={{ // Updated p styling
+          fontSize: '1.2rem', 
+          color: 'var(--color-wood)',
+          fontFamily: 'var(--font-body)'
+        }}>
+          Renewable Energy for the Ethereum Virtual Machine
+        </p>
+      </div>
+
       {/* Stats Overview */}
       <TransactionStats transactions={transactions} />
+
 
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', // Updated grid styling
           gap: '2rem',
-          marginTop: '2rem',
         }}
       >
-        {/* Pay Creator */}
-        <div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}> {/* Added wrapper div */}
           <PayCreator
-            address={address as string}
+            address={address || ''}
             onTransactionCreated={addTransaction}
             onStatusUpdate={updateTransactionStatus}
           />
+          
+          {showPowerSwap && ( // Conditional rendering for PowerEvvmSwap
+            <div className="animate-fade-in">
+              <PowerEvvmSwap />
+            </div>
+          )}
         </div>
 
         {/* Transactions History */}
         <div>
-          <div
-            style={{
-              background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-              border: '1px solid #334155',
-              borderRadius: '12px',
-              padding: '1.5rem',
-            }}
-          >
+          <PixelCard title="Transaction Log">
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
+                justifyContent: 'flex-end',
                 marginBottom: '1.5rem',
               }}
             >
-              <h2 style={{ margin: 0, color: '#e2e8f0', fontSize: '1.3rem' }}>
-                Transaction History
-              </h2>
-              <button
+              <PixelButton
+                variant="secondary"
                 onClick={downloadTransactions}
-                style={{
-                  padding: '0.5rem 1rem',
-                  background: '#0ea5e9',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontSize: '0.9rem',
-                  fontWeight: 600,
-                }}
+                style={{ fontSize: '0.7rem', padding: '0.5rem 1rem' }}
               >
                 Download All
-              </button>
+              </PixelButton>
             </div>
 
             {/* Filter Buttons */}
-            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-              {(['all', 'created', 'executed', 'failed'] as const).map((f) => (
-                <button
+            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+              {(['all', 'created', 'queued', 'executed', 'failed'] as const).map((f) => (
+                <PixelButton
                   key={f}
+                  variant={filter === f ? 'primary' : 'secondary'}
                   onClick={() => setFilter(f)}
                   style={{
+                    fontSize: '0.7rem',
                     padding: '0.4rem 0.8rem',
-                    background: filter === f ? '#00EE96' : 'rgba(2, 132, 199, 0.1)',
-                    color: filter === f ? '#0f172a' : '#0ea5e9',
-                    border: `1px solid ${filter === f ? '#00EE96' : 'rgba(2, 132, 199, 0.3)'}`,
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '0.85rem',
-                    fontWeight: 600,
-                    textTransform: 'capitalize',
-                    transition: 'all 0.2s',
+                    opacity: filter === f ? 1 : 0.8
                   }}
                 >
                   {f} ({transactions.filter((t) => f === 'all' || t.status === f).length})
-                </button>
+                </PixelButton>
               ))}
             </div>
 
@@ -206,7 +202,7 @@ export const Dashboard = () => {
               transactions={filteredTransactions}
               onStatusUpdate={updateTransactionStatus}
             />
-          </div>
+          </PixelCard>
         </div>
       </div>
     </div>

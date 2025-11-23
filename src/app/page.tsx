@@ -39,16 +39,18 @@ export default function Home() {
             </p>
           </div>
         </div>
-        <InvestmentComponent />
-        <div
-          style={{
-            background: 'rgba(2, 132, 199, 0.1)',
-            borderRadius: '6px',
-            padding: '0.25rem',
-            border: '1px solid rgba(2, 132, 199, 0.3)',
-          }}
-        >
-          <ConnectButton />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <InvestmentComponent />
+          <div
+            style={{
+              background: 'rgba(2, 132, 199, 0.1)',
+              borderRadius: '6px',
+              padding: '0.25rem',
+              border: '1px solid rgba(2, 132, 199, 0.3)',
+            }}
+          >
+            <ConnectButton />
+          </div>
         </div>
       </header>
 

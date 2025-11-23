@@ -5,6 +5,10 @@ import { config } from '@/config/index'
 import { EVVMSignatureBuilder } from '@evvm/viem-signature-library'
 import { getAccountWithRetry } from '@/utils/getAccountWithRetry'
 import type { Transaction } from './Dashboard'
+import { PixelCard } from './pixel-ui/PixelCard'
+import { PixelInput } from './pixel-ui/PixelInput'
+import { PixelButton } from './pixel-ui/PixelButton'
+import { useEvvmBalance } from '@/hooks/useEvvmBalance'
 
 interface PayCreatorProps {
   address: string
@@ -24,7 +28,15 @@ export const PayCreator = ({
 }: PayCreatorProps) => {
   const [loading, setLoading] = useState(false)
   const [evvmAddress, setEvvmAddress] = useState('0xfB505AE3d70cA90c90c4dd48D0d19f3686dfD682')
-  const [evvmID, setEvvmID] = useState('')
+  const [evvmID, setEvvmID] = useState(69420)
+  
+  // Controlled inputs for balance fetching
+  const [tokenAddress, setTokenAddress] = useState('0xaf88d065e77c8cC2239327C5EDb3A432268e5831')
+  const [recipientAddress, setRecipientAddress] = useState('0xEC08EfF77496601BE56c11028A516366DbF03F13')
+
+  // Fetch Balances
+  const { balance: userBalance } = useEvvmBalance(address, tokenAddress)
+  const { balance: recipientBalance } = useEvvmBalance(recipientAddress, tokenAddress)
 
   const handleCreateSignature = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -34,7 +46,7 @@ export const PayCreator = ({
       const formData = new FormData(e.currentTarget)
       const to = formData.get('to') as string
       const toIdentity = formData.get('toIdentity') as string
-      const tokenAddress = formData.get('tokenAddress') as string
+      // tokenAddress is already in state
       const amount = formData.get('amount') as string
       const priorityFee = formData.get('priorityFee') as string
       const nonce = formData.get('nonce') as string
@@ -79,7 +91,7 @@ export const PayCreator = ({
       }
 
       onTransactionCreated(newTx)
-      ;(e.target as HTMLFormElement).reset()
+      // Reset form manually if needed, but controlled inputs might need reset logic
       alert('Signature created successfully!')
     } catch (error) {
       console.error('Error creating signature:', error)
@@ -90,272 +102,180 @@ export const PayCreator = ({
   }
 
   return (
-    <div
-      style={{
-        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-        border: '1px solid #334155',
-        borderRadius: '12px',
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+      {/* Balance Monitor Box */}
+      <div className="pixel-border" style={{ 
+        background: 'var(--color-wood-light)', 
         padding: '1.5rem',
-      }}
-    >
-      <h2 style={{ margin: '0 0 1.5rem 0', color: '#e2e8f0', fontSize: '1.3rem' }}>
-        Create Payment Signature
-      </h2>
+        position: 'relative'
+      }}>
+        <h3 style={{ 
+          fontSize: '1rem', 
+          marginBottom: '1rem', 
+          color: 'var(--color-soil)',
+          borderBottom: '2px solid var(--color-soil)',
+          paddingBottom: '0.5rem'
+        }}>
+          EVVM Balance Monitor
+        </h3>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div style={{ 
+            background: 'var(--color-white)', 
+            padding: '1rem', 
+            border: '2px solid var(--color-wood)',
+            textAlign: 'center'
+          }}>
+            <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '0.5rem' }}>YOUR BALANCE</p>
+            <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--color-soil)' }}>
+              {userBalance ? userBalance.toString() : '0'}
+            </p>
+          </div>
+          <div style={{ 
+            background: 'var(--color-white)', 
+            padding: '1rem', 
+            border: '2px solid var(--color-wood)',
+            textAlign: 'center'
+          }}>
+            <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '0.5rem' }}>RECIPIENT BALANCE</p>
+            <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--color-soil)' }}>
+              {recipientBalance ? recipientBalance.toString() : '0'}
+            </p>
+          </div>
+        </div>
+        {!tokenAddress && (
+          <p style={{ textAlign: 'center', fontSize: '0.8rem', color: '#ef4444', marginTop: '1rem' }}>
+            * Select a Token Address to view balances
+          </p>
+        )}
+      </div>
 
-      <form onSubmit={handleCreateSignature} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        {/* EVVM Configuration */}
-        <div>
-          <label style={{ color: '#cbd5e1', display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-            EVVM Contract Address
-          </label>
-          <input
-            type="text"
+      <PixelCard title="Create Payment Signature">
+        <form onSubmit={handleCreateSignature} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {/* EVVM Configuration */}
+          <PixelInput
+            label="EVVM Contract Address"
             value={evvmAddress}
             onChange={(e) => setEvvmAddress(e.target.value)}
             placeholder="0x..."
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              background: '#0f172a',
-              border: '1px solid #334155',
-              borderRadius: '6px',
-              color: '#e2e8f0',
-              fontFamily: 'monospace',
-              fontSize: '0.9rem',
-              boxSizing: 'border-box',
-            }}
+            style={{ fontFamily: 'monospace' }}
           />
-        </div>
 
-        <div>
-          <label style={{ color: '#cbd5e1', display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-            EVVM ID
-          </label>
-          <input
-            type="text"
+          <PixelInput
+            label="EVVM ID"
             value={evvmID}
             onChange={(e) => setEvvmID(e.target.value)}
             placeholder="Enter EVVM ID"
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              background: '#0f172a',
-              border: '1px solid #334155',
-              borderRadius: '6px',
-              color: '#e2e8f0',
-              fontSize: '0.9rem',
-              boxSizing: 'border-box',
-            }}
           />
-        </div>
 
-        {/* Recipient */}
-        <div>
-          <label style={{ color: '#cbd5e1', display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-            Recipient Address
-          </label>
-          <input
-            type="text"
+          {/* Recipient */}
+          <PixelInput
+            label="Recipient Address"
             name="to"
+            value={recipientAddress}
+            onChange={(e) => setRecipientAddress(e.target.value)}
             placeholder="0x..."
             required
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              background: '#0f172a',
-              border: '1px solid #334155',
-              borderRadius: '6px',
-              color: '#e2e8f0',
-              fontFamily: 'monospace',
-              fontSize: '0.9rem',
-              boxSizing: 'border-box',
-            }}
+            style={{ fontFamily: 'monospace' }}
           />
-        </div>
 
-        <div>
-          <label style={{ color: '#cbd5e1', display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-            Recipient Identity (Optional)
-          </label>
-          <input
-            type="text"
+          <PixelInput
+            label="Recipient Identity (Optional)"
             name="toIdentity"
             placeholder="Username or identity"
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              background: '#0f172a',
-              border: '1px solid #334155',
-              borderRadius: '6px',
-              color: '#e2e8f0',
-              fontSize: '0.9rem',
-              boxSizing: 'border-box',
-            }}
           />
-        </div>
 
-        {/* Token & Amount */}
-        <div>
-          <label style={{ color: '#cbd5e1', display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-            Token Address
-          </label>
-          <input
-            type="text"
+          {/* Token & Amount */}
+          <PixelInput
+            label="Token Address"
             name="tokenAddress"
+            value={tokenAddress}
+            onChange={(e) => setTokenAddress(e.target.value)}
             placeholder="0x..."
             required
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              background: '#0f172a',
-              border: '1px solid #334155',
-              borderRadius: '6px',
-              color: '#e2e8f0',
-              fontFamily: 'monospace',
-              fontSize: '0.9rem',
-              boxSizing: 'border-box',
-            }}
+            style={{ fontFamily: 'monospace' }}
           />
-        </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-          <div>
-            <label style={{ color: '#cbd5e1', display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-              Amount
-            </label>
-            <input
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <PixelInput
+              label="Amount"
               type="number"
               name="amount"
               placeholder="0"
               required
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                background: '#0f172a',
-                border: '1px solid #334155',
-                borderRadius: '6px',
-                color: '#e2e8f0',
-                fontSize: '0.9rem',
-                boxSizing: 'border-box',
-              }}
             />
-          </div>
 
-          <div>
-            <label style={{ color: '#cbd5e1', display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-              Priority Fee
-            </label>
-            <input
+            <PixelInput
+              label="Priority Fee"
               type="number"
               name="priorityFee"
               placeholder="0"
               required
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                background: '#0f172a',
-                border: '1px solid #334155',
-                borderRadius: '6px',
-                color: '#e2e8f0',
-                fontSize: '0.9rem',
-                boxSizing: 'border-box',
-              }}
             />
           </div>
-        </div>
 
-        {/* Nonce & Priority */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-          <div>
-            <label style={{ color: '#cbd5e1', display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-              Nonce
-            </label>
-            <input
+          {/* Nonce & Priority */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <PixelInput
+              label="Nonce"
               type="number"
               name="nonce"
               placeholder="0"
               required
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                background: '#0f172a',
-                border: '1px solid #334155',
-                borderRadius: '6px',
-                color: '#e2e8f0',
-                fontSize: '0.9rem',
-                boxSizing: 'border-box',
-              }}
             />
+
+            <div>
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '0.5rem', 
+                fontFamily: 'var(--font-heading)', 
+                fontSize: '0.7rem', 
+                color: 'var(--color-soil)',
+                textTransform: 'uppercase'
+              }}>
+                Priority
+              </label>
+              <select
+                name="priority"
+                defaultValue="low"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  backgroundColor: 'var(--color-white)',
+                  border: '4px solid var(--color-soil)',
+                  color: 'var(--color-soil)',
+                  fontFamily: 'var(--font-body)',
+                  fontSize: '1.2rem',
+                  boxShadow: 'inset 4px 4px 0 rgba(0,0,0,0.1)',
+                  outline: 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="low">Synchronous (Low)</option>
+                <option value="high">Asynchronous (High)</option>
+              </select>
+            </div>
           </div>
 
-          <div>
-            <label style={{ color: '#cbd5e1', display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-              Priority
-            </label>
-            <select
-              name="priority"
-              defaultValue="low"
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                background: '#0f172a',
-                border: '1px solid #334155',
-                borderRadius: '6px',
-                color: '#e2e8f0',
-                fontSize: '0.9rem',
-                boxSizing: 'border-box',
-              }}
-            >
-              <option value="low">Synchronous (Low)</option>
-              <option value="high">Asynchronous (High)</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Executor */}
-        <div>
-          <label style={{ color: '#cbd5e1', display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-            Executor Address (Optional)
-          </label>
-          <input
-            type="text"
+          {/* Executor */}
+          <PixelInput
+            label="Executor Address (Optional)"
             name="executor"
             placeholder="0x..."
             defaultValue="0x0000000000000000000000000000000000000000"
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              background: '#0f172a',
-              border: '1px solid #334155',
-              borderRadius: '6px',
-              color: '#e2e8f0',
-              fontFamily: 'monospace',
-              fontSize: '0.9rem',
-              boxSizing: 'border-box',
-            }}
+            style={{ fontFamily: 'monospace' }}
           />
-        </div>
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={loading || !evvmID}
-          style={{
-            padding: '0.75rem',
-            background: loading || !evvmID ? '#64748b' : '#00EE96',
-            color: loading || !evvmID ? '#94a3b8' : '#0f172a',
-            border: 'none',
-            borderRadius: '6px',
-            fontSize: '1rem',
-            fontWeight: 600,
-            cursor: loading || !evvmID ? 'not-allowed' : 'pointer',
-            transition: 'all 0.2s',
-            marginTop: '1rem',
-          }}
-        >
-          {loading ? 'Creating...' : 'Create Signature'}
-        </button>
-      </form>
+          {/* Submit Button */}
+          <PixelButton
+            type="submit"
+            disabled={loading || !evvmID}
+            isLoading={loading}
+            style={{ marginTop: '1rem', width: '100%' }}
+          >
+            Create Signature
+          </PixelButton>
+        </form>
+      </PixelCard>
     </div>
   )
 }

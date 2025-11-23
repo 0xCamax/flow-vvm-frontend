@@ -26,23 +26,31 @@ export const TransactionStats = ({ transactions }: TransactionStatsProps) => {
     bgColor: string
   }) => (
     <div
+      className="pixel-border"
       style={{
-        background: bgColor,
-        border: `2px solid ${color}`,
-        borderRadius: '12px',
+        background: 'var(--color-cloud)',
         padding: '1.5rem',
         textAlign: 'center',
+        position: 'relative',
+        boxShadow: '4px 4px 0 rgba(0,0,0,0.1)',
       }}
     >
-      <p style={{ margin: '0 0 0.5rem 0', color: '#94a3b8', fontSize: '0.9rem' }}>
+      <p style={{ 
+        margin: '0 0 0.5rem 0', 
+        color: 'var(--color-soil)', 
+        fontSize: '0.9rem',
+        fontFamily: 'var(--font-heading)',
+        opacity: 0.8
+      }}>
         {label}
       </p>
       <p
         style={{
           margin: 0,
-          color,
+          color: color,
           fontSize: '2rem',
           fontWeight: 700,
+          textShadow: '2px 2px 0 rgba(0,0,0,0.1)'
         }}
       >
         {value}
@@ -62,32 +70,32 @@ export const TransactionStats = ({ transactions }: TransactionStatsProps) => {
       <StatCard
         label="Total Transactions"
         value={stats.total.toString()}
-        color="#0ea5e9"
-        bgColor="rgba(14, 165, 233, 0.1)"
+        color="var(--color-wood)"
+        bgColor="var(--color-cloud)"
       />
       <StatCard
         label="Created"
         value={stats.created.toString()}
-        color="#00EE96"
-        bgColor="rgba(0, 238, 150, 0.1)"
+        color="var(--color-wood)"
+        bgColor="var(--color-cloud)"
       />
       <StatCard
         label="Executed"
         value={stats.executed.toString()}
-        color="#10b981"
-        bgColor="rgba(16, 185, 129, 0.1)"
+        color="var(--color-green)"
+        bgColor="var(--color-cloud)"
       />
       <StatCard
         label="Failed"
         value={stats.failed.toString()}
         color="#ef4444"
-        bgColor="rgba(239, 68, 68, 0.1)"
+        bgColor="var(--color-cloud)"
       />
       <StatCard
         label="Total Amount"
         value={stats.totalAmount.toString()}
-        color="#8b5cf6"
-        bgColor="rgba(139, 92, 246, 0.1)"
+        color="var(--color-soil)"
+        bgColor="var(--color-cloud)"
       />
     </div>
   )
