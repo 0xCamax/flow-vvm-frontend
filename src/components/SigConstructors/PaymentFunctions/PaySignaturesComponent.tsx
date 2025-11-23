@@ -34,6 +34,52 @@ export const PaySignaturesComponent = ({
   const [isUsingExecutor, setIsUsingExecutor] = React.useState(false);
   const [priority, setPriority] = React.useState("low");
   const [dataToGet, setDataToGet] = React.useState<PayInputData | null>(null);
+  const [savedTransactions, setSavedTransactions] = React.useState<Array<{
+    timestamp: string;
+    data: PayInputData;
+  }>>([]);
+
+  React.useEffect(() => {
+    loadSavedTransactions();
+  }, []);
+
+  const loadSavedTransactions = async () => {
+    try {
+      const saved = await window.fs.readFile('signed_transactions.json', { encoding: 'utf8' });
+      const transactions = JSON.parse(saved);
+      setSavedTransactions(transactions);
+    } catch {
+      setSavedTransactions([]);
+    }
+  };
+
+  const saveTransactionToFile = async (transaction: PayInputData) => {
+    try {
+      const newTransaction = {
+        timestamp: new Date().toISOString(),
+        data: transaction,
+      };
+      const updatedTransactions = [...savedTransactions, newTransaction];
+      
+      const blob = new Blob([JSON.stringify(updatedTransactions, null, 2)], {
+        type: 'application/json',
+      });
+      
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'signed_transactions.json';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      setSavedTransactions(updatedTransactions);
+    } catch (error) {
+      console.error('Error saving transaction:', error);
+      alert('Failed to save transaction to file');
+    }
+  };
 
   const makeSig = async () => {
     const walletData = await getAccountWithRetry(config);
@@ -72,7 +118,7 @@ export const PaySignaturesComponent = ({
         formData.executor as `0x${string}`
       );
 
-      setDataToGet({
+      const paymentData: PayInputData = {
         from: walletData.address as `0x${string}`,
         to_address: (formData.to.startsWith("0x")
           ? formData.to
@@ -85,9 +131,12 @@ export const PaySignaturesComponent = ({
         priority: priority === "high",
         executor: formData.executor,
         signature,
-      });
+      };
+
+      setDataToGet(paymentData);
     } catch (error) {
       console.error("Error creating signature:", error);
+      alert("Error creating signature: " + (error as Error).message);
     }
   };
 
@@ -102,13 +151,22 @@ export const PaySignaturesComponent = ({
       return;
     }
 
-    executePay(dataToGet, evvmAddress as `0x${string}`)
-      .then(() => {
-        console.log("Payment executed successfully");
-      })
-      .catch((error) => {
-        console.error("Error executing payment:", error);
-      });
+    try {
+      await executePay(dataToGet, evvmAddress as `0x${string}`);
+      console.log("Payment executed successfully");
+      await saveTransactionToFile(dataToGet);
+    } catch (error) {
+      console.error("Error executing payment:", error);
+      alert("Error executing payment: " + (error as Error).message);
+    }
+  };
+
+  const downloadSignedTransaction = () => {
+    if (!dataToGet) {
+      alert("No transaction to download");
+      return;
+    }
+    saveTransactionToFile(dataToGet);
   };
 
   return (
@@ -118,8 +176,6 @@ export const PaySignaturesComponent = ({
         link="https://www.evvm.info/docs/SignatureStructures/EVVM/SinglePaymentSignatureStructure"
       />
       <br />
-
-      {/* EVVM ID and Address are now passed as props */}
 
       {/* Recipient configuration section */}
       <div style={{ marginBottom: "1rem" }}>
@@ -180,7 +236,6 @@ export const PaySignaturesComponent = ({
       ))}
 
       {/* Executor configuration */}
-
       <ExecutorSelector
         inputId="executorInput_Pay"
         placeholder="Enter executor address"
@@ -189,11 +244,9 @@ export const PaySignaturesComponent = ({
       />
 
       {/* Priority configuration */}
-
       <PrioritySelector onPriorityChange={setPriority} />
 
       {/* Nonce section with automatic generator */}
-
       <NumberInputWithGenerator
         label="Nonce"
         inputId="nonceInput_Pay"
@@ -224,11 +277,56 @@ export const PaySignaturesComponent = ({
       </button>
 
       {/* Results section */}
-      <DataDisplayWithClear
-        dataToGet={dataToGet}
-        onClear={() => setDataToGet(null)}
-        onExecute={executePayment}
-      />
+      {dataToGet && (
+        <div style={{ marginTop: "2rem", width: "100%" }}>
+          <DataDisplayWithClear
+            dataToGet={dataToGet}
+            onClear={() => setDataToGet(null)}
+            onExecute={executePayment}
+          />
+          <button
+            onClick={downloadSignedTransaction}
+            style={{
+              padding: "0.5rem 1rem",
+              marginTop: "1rem",
+              backgroundColor: "#10b981",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              fontWeight: 600,
+            }}
+          >
+            Download Signed Transaction
+          </button>
+        </div>
+      )}
+
+      {/* Saved transactions history */}
+      {savedTransactions.length > 0 && (
+        <div style={{ marginTop: "2rem", width: "100%" }}>
+          <h3>Saved Transactions ({savedTransactions.length})</h3>
+          <div style={{
+            maxHeight: "200px",
+            overflowY: "auto",
+            border: "1px solid #ccc",
+            padding: "1rem",
+            borderRadius: "5px",
+          }}>
+            {savedTransactions.map((tx, idx) => (
+              <div key={idx} style={{
+                padding: "0.5rem",
+                borderBottom: idx < savedTransactions.length - 1 ? "1px solid #eee" : "none",
+                fontSize: "0.9rem",
+              }}>
+                <strong>{tx.timestamp}</strong><br />
+                To: {tx.data.to_identity || tx.data.to_address}<br />
+                Amount: {tx.data.amount.toString()}<br />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

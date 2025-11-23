@@ -1,113 +1,58 @@
-// import { cookieStorage, createStorage, http } from '@wagmi/core'
-import { ConnectButton } from "@/components/ConnectButton";
-import { SigMenu } from "@/components/SigConstructors/SigMenu";
-import Image from "next/image";
+import { ConnectButton } from '@/components/ConnectButton'
+import { InvestmentComponent } from '@/components/InvestmentComponent'
+import { Dashboard } from '@/components/Dashboard'
+import Image from 'next/image'
+import { headers } from 'next/headers'
 
 export default function Home() {
   return (
-    <div className={"pages"}>
+    <div>
       <header
         style={{
-          width: "90vw",
-          minWidth: "90vw",
-          height: 10,
-          left: 0,
+          width: '100%',
+          position: 'sticky',
           top: 0,
-          position: "relative",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          background: "#03221E",
-          borderRadius: 999,
-          boxShadow: "0 2px 12px 0 rgba(0,0,0,0.07)",
-          border: "none",
-          padding: "0.5rem 2.5rem 0.5rem 1.5rem",
+          zIndex: 100,
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          background: 'linear-gradient(180deg, var(--panel), rgba(0,0,0,0.25))',
+          borderBottom: '3px solid var(--accent)',
+          padding: '1rem 2.5rem',
           minHeight: 70,
-          marginBottom: 32,
-          marginTop: 8,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", flex: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <a
             href="https://www.evvm.info/docs/intro"
-            style={{ display: "flex", alignItems: "center" }}
+            style={{ display: 'flex', alignItems: 'center' }}
           >
-            <Image
-              src="/evvm.svg"
-              alt="Reown"
-              width={60}
-              height={90}
-              priority
-            />
+            <Image src="/evvm.svg" alt="EVVM" width={50} height={50} priority />
           </a>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            gap: 0,
-            flex: 1,
-            justifyContent: "flex-end",
-            alignItems: "center",
-          }}
-        >
-          <a
-            href="https://www.evvm.info/docs/intro"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <button
-              style={{
-                padding: "0.45rem 1.1rem",
-                borderRadius: 999,
-                border: "1.5px solid #00EE96",
-                background: "#00EE96",
-                color: "#03221E",
-                fontWeight: 600,
-                fontSize: 15,
-                height: "45px",
-                width: "100px",
-                cursor: "pointer",
-              }}
-            >
-              Docs
-            </button>
-          </a>
-          <a href="https://evvm.org" target="_blank" rel="noopener noreferrer">
-            <button
-              style={{
-                padding: "0.45rem 1.1rem",
-                borderRadius: 999,
-                border: "1.5px solid #00EE96",
-                background: "#00EE96",
-                color: "#03221E",
-                fontWeight: 600,
-                fontSize: 15,
-                height: "45px",
-                width: "100px",
-                cursor: "pointer",
-              }}
-            >
-              Website
-            </button>
-          </a>
-          <div
-            style={{
-              marginLeft: 10,
-              background: "#fff",
-              borderRadius: 999,
-              padding: "0rem 0rem",
-              
-              boxShadow: "0 1px 4px 0 rgba(0,0,0,0.06)",
-            }}
-          >
-            <ConnectButton />
+          <div>
+            <h1 style={{ margin: 0, color: '#00EE96', fontSize: '1.5rem' }}>
+              Dashboard
+            </h1>
+            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem' }}>
+              Arbitrum Mainnet
+            </p>
           </div>
         </div>
+        <InvestmentComponent />
+        <div
+          style={{
+            background: 'rgba(2, 132, 199, 0.1)',
+            borderRadius: '6px',
+            padding: '0.25rem',
+            border: '1px solid rgba(2, 132, 199, 0.3)',
+          }}
+        >
+          <ConnectButton />
+        </div>
       </header>
-      
-      <br />
-      <SigMenu />
+
+      <Dashboard />
     </div>
-  );
+  )
 }
